@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-digital_library}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  identity-api:
+    build:
+      context: ./src/services/identity
+      dockerfile: src/Identity.Api/Dockerfile
+    environment:
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__Secret: ${JWT_SECRET}
+      Jwt__ExpiresInHours: ${JWT_EXPIRES_IN_HOURS:-24}
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  catalog-api:
+    build:
+      context: ./src/services/catalog
+      dockerfile: src/Catalog.Api/Dockerfile
+    environment:
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__Secret: ${JWT_SECRET}
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  engagement-api:
+    build:
+      context: ./src/services/engagement
+      dockerfile: src/Engagement.Api/Dockerfile
+    environment:
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__Secret: ${JWT_SECRET}
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./src/frontend/digital-library-ui
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - identity-api
+      - catalog-api
+      - engagement-api
+
+volumes:
+  postgres_data:
