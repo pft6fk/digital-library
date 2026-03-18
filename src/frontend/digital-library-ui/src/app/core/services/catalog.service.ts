@@ -29,4 +29,12 @@ export class CatalogService {
   getBook(id: string): Observable<BookDetail> {
     return this.http.get<BookDetail>(`${environment.catalogApiUrl}/books/${id}`);
   }
+
+  createAuthor(data: { fullName: string; bio?: string; birthDate?: string }): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(`${environment.catalogApiUrl}/authors`, data);
+  }
+
+  createBook(data: { title: string; description?: string; authorId: string }): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(`${environment.catalogApiUrl}/books`, data);
+  }
 }
