@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-digital_library}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -19,8 +19,8 @@ services:
       context: ./src/services/identity
       dockerfile: src/Identity.Api/Dockerfile
     environment:
-      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
-      Jwt__Secret: ${JWT_SECRET}
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Secret: ${JWT_SECRET:-digital-library-dev-secret-key-min-32-chars!}
       Jwt__ExpiresInHours: ${JWT_EXPIRES_IN_HOURS:-24}
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
@@ -32,8 +32,8 @@ services:
       context: ./src/services/catalog
       dockerfile: src/Catalog.Api/Dockerfile
     environment:
-      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
-      Jwt__Secret: ${JWT_SECRET}
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Secret: ${JWT_SECRET:-digital-library-dev-secret-key-min-32-chars!}
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
       postgres:
@@ -44,8 +44,8 @@ services:
       context: ./src/services/engagement
       dockerfile: src/Engagement.Api/Dockerfile
     environment:
-      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
-      Jwt__Secret: ${JWT_SECRET}
+      ConnectionStrings__Default: "Host=postgres;Database=${POSTGRES_DB:-digital_library};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Secret: ${JWT_SECRET:-digital-library-dev-secret-key-min-32-chars!}
       ASPNETCORE_ENVIRONMENT: Production
     depends_on:
       postgres:

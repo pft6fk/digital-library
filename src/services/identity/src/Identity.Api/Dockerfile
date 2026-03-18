@@ -1,13 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY Identity.sln ./
 COPY src/Identity.Domain/Identity.Domain.csproj src/Identity.Domain/
 COPY src/Identity.Application/Identity.Application.csproj src/Identity.Application/
 COPY src/Identity.Infrastructure/Identity.Infrastructure.csproj src/Identity.Infrastructure/
 COPY src/Identity.Api/Identity.Api.csproj src/Identity.Api/
 
-RUN dotnet restore
+RUN dotnet restore src/Identity.Api/Identity.Api.csproj
 
 COPY src/ src/
 
