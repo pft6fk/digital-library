@@ -1,13 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY Engagement.sln ./
 COPY src/Engagement.Domain/Engagement.Domain.csproj src/Engagement.Domain/
 COPY src/Engagement.Application/Engagement.Application.csproj src/Engagement.Application/
 COPY src/Engagement.Infrastructure/Engagement.Infrastructure.csproj src/Engagement.Infrastructure/
 COPY src/Engagement.Api/Engagement.Api.csproj src/Engagement.Api/
 
-RUN dotnet restore
+RUN dotnet restore src/Engagement.Api/Engagement.Api.csproj
 
 COPY src/ src/
 
