@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Comment } from '../models/comment.model';
+import { BookRating } from '../models/rating.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -15,5 +16,14 @@ export class EngagementService {
 
   addComment(bookId: string, text: string): Observable<{ id: string }> {
     return this.http.post<{ id: string }>(`${environment.engagementApiUrl}/comments`, { bookId, text });
+  }
+
+  getBookRating(bookId: string): Observable<BookRating> {
+    const params = new HttpParams().set('bookId', bookId);
+    return this.http.get<BookRating>(`${environment.engagementApiUrl}/ratings`, { params });
+  }
+
+  addRating(bookId: string, value: number): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(`${environment.engagementApiUrl}/ratings`, { bookId, value });
   }
 }

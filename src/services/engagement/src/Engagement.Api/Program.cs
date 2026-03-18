@@ -2,6 +2,8 @@ using System.Text;
 using Engagement.Api.Middleware;
 using Engagement.Application.Features.Comments.Commands;
 using Engagement.Application.Features.Comments.Queries;
+using Engagement.Application.Features.Ratings.Commands;
+using Engagement.Application.Features.Ratings.Queries;
 using Engagement.Domain.Repositories;
 using Engagement.Infrastructure.Persistence;
 using Engagement.Infrastructure.Persistence.Repositories;
@@ -16,8 +18,11 @@ builder.Services.AddDbContext<EngagementDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<GetCommentsByBookIdQueryHandler>();
 builder.Services.AddScoped<AddCommentCommandHandler>();
+builder.Services.AddScoped<GetBookRatingQueryHandler>();
+builder.Services.AddScoped<AddRatingCommandHandler>();
 
 var jwtSecret = builder.Configuration["Jwt:Secret"]
     ?? throw new InvalidOperationException("Jwt:Secret is not configured.");

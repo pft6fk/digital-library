@@ -6,6 +6,7 @@ namespace Engagement.Infrastructure.Persistence;
 public sealed class EngagementDbContext : DbContext
 {
     public DbSet<Comment> Comments => Set<Comment>();
+    public DbSet<Rating> Ratings => Set<Rating>();
 
     public EngagementDbContext(DbContextOptions<EngagementDbContext> options) : base(options) { }
 
